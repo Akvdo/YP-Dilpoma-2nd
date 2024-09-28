@@ -6,7 +6,7 @@
 
 SELECT  c.login AS "Courier", -- опеределяем первое поле с логинами "login" из таблицы "Couriers"
         COUNT(o."inDelivery") AS "Orders in delivery" -- опеределяем второе поле с количеством заказов в статусе «В доставке»
-FROM "Orders" AS o -- первая таблица с заказами "Orders" для объелинения
+FROM "Orders" AS o -- первая таблица с заказами "Orders" для объединения
 INNER JOIN "Couriers" AS c ON o."courierId" = c.id -- вторая таблица с данными курьеров "Couriers", которая объединяется с первой
 WHERE o."inDelivery" = true -- оставляем только те записи, в которых поле inDelivery = true
 GROUP BY c.login; -- группируем данные по логину курьера
