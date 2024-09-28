@@ -1,70 +1,34 @@
-﻿# Тесты на проверку  создания наборов с продуктами в Яндекс.Прилавок с помощью API Яндекс.Прилавок.
-# Набор будет создаваться внутри конкретного пользователя, а не карточки
+﻿# Вторая часть дипломного проекта
+# Работа с базой данных
+## Задание 1
+### Для проверки, отображается ли созданный заказ в базе данных, выводится список логинов курьеров с количеством их заказов в статусе «В доставке» (поле inDelivery = true). 
+## Задание 2
+### Чтобы убедиться, что в базе данных статусы заказов записываются корректно, выводятся все трекеры заказов и их статусы. 
+### Статусы определяются по следующему правилу:
+1. Если поле finished == true, то вывести статус 2.
+2. Если поле canсelled == true, то вывести статус -1.
+3. Если поле inDelivery == true, то вывести статус 1.
+4. Для остальных случаев вывести 0.
+### Технические примечания:
+1. Доступ к базе осуществляется с помощью команды `psql -U morty -d scooter_rent`.
+2. Пароль: `smith`.
+3. У psql есть особенность: если таблица в базе данных с большой буквы,то её в запросе нужно брать в кавычки. Например, select * from “Orders”.
+# Автоматизация теста к API
+## Задание
+### Автоматизирован сценарий, который подготовили коллеги-тестировщики:
+1. Клиент создает заказ.
+2. Проверяется, что по треку заказа можно получить данные о заказе. 
+### Шаги автотеста:
+1. Выполняется запрос на создание заказа.
+2. Сохраняется номер трека заказа.
+3. Выполняется запрос на получения заказа по треку заказа.
+4. Проверяется, что код ответа равен 200.
 # Проект состоит из следующих файлов:
 - `configuration.py` - Адреса тестового стенда, а также эндпоинтов 
 - `data.py` - Данные для авторизации и запросов
-- `sender_stand_request.py` - Код для работы со стендом
+- `stand_request.py` - Код для работы со стендом
 - `.gitignore` - Служебный файл Git
 - `README.md` - Файл, который Вы сейчас читаете
-# Предусловия для выполения автотестов
-- Для запуска тестов должны быть установлены пакеты pytest и requests
-- Запуск всех тестов выполянется командой pytest
-# Чек-лист, проверки из которого будут автоматизированы
-1. Допустимое количество символов (1):
-`kit_body = {
-"name": "a"
-}`
-   - ОР: Код ответа — 201. В ответе поле name совпадает с полем name в запросе
-2. Допустимое количество символов (511):
-`kit_body = {
-"name":"Тестовое значение для этой проверки будет ниже"
-}`
-   - ОР: Код ответа — 201. В ответе поле name совпадает с полем name в запросе
-3. Количество символов меньше допустимого (0):
-`kit_body = {
-"name": ""
-}`
-   - ОР: Код ответа — 400
-4. Количество символов больше допустимого (512):
-`kit_body = {
-"name":"Тестовое значение для этой проверки будет ниже"`
-   - ОР: Код ответа — 400
-5. Разрешены английские буквы:
-`kit_body = {
-"name": "QWErty"
-}`
-   - ОР: Код ответа — 201. В ответе поле name совпадает с полем name в запросе
-6. Разрешены русские буквы:
-`kit_body = {
-"name": "Мария"
-}`
-   - ОР: Код ответа — 201. В ответе поле name совпадает с полем name в запросе
-7. Разрешены спецсимволы:
-`kit_body = {
-"name": ""№%@","
-}`
-   - ОР: Код ответа — 201. В ответе поле name совпадает с полем name в запросе
-8. Разрешены пробелы:
-`kit_body = {
-"name": " Человек и КО "
-}`
-   - ОР: Код ответа — 201. В ответе поле name совпадает с полем name в запросе
-9. Разрешены цифры:
-`kit_body = {
-"name": "123"
-}`
-   - ОР: Код ответа — 201. В ответе поле name совпадает с полем name в запросе
-10. Параметр не передан в запросе:
-`kit_body = {
-}`
-    - ОР: Код ответа — 400
-11. Передан другой тип параметра (число):
-`kit_body = {
-"name": 123
-}`
-    - ОР: Код ответа — 400
-# Тестовые значения для проверок №2 и №4
-- Тест № 2 - Допустимое количество символов (511):
-> `kit_body = {    "name":"AbcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdAbcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabC"}`
-- Тест № 4 - Количество символов больше допустимого (512):
-> `kit_body = {  "name":"AbcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdAbcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcD"}`
+# Предусловия для выполнения автотестов:
+- Для запуска тестов должны быть установлены пакеты `pytest` и `requests`
+- Запуск всех тестов выполянется командой `pytest`
